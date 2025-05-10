@@ -1,0 +1,1 @@
+mongodb+srv://filipiandrea2006:yWCN4PpJa90riaGK@tranify.bvxy60q.mongodb.net/?retryWrites=true&w=majority&appName=Tranify

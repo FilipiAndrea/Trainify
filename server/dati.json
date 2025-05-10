@@ -1,0 +1,341 @@
+[
+  {
+    "_id": "001",
+    "nome": "Luca",
+    "email": "luca",
+    "password_hash": "password",
+    "allenamenti_salvati": [
+      {
+        "id_workout": "allenamento01",
+        "titolo": "Split Settimanale Classico",
+        "descrizione": "Allenamento settimanale diviso per gruppi muscolari",
+        "data_creazione": "2025-04-10",
+        "creato_da_ai": true,
+        "settimana": [
+          {
+            "giorno": "Lunedì",
+            "gruppi_muscolari": ["Schiena"],
+            "esercizi": [
+              {
+                "nome": "Lat Machine",
+                "serie": 4,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Rematore con bilanciere",
+                "serie": 3,
+                "ripetizioni": 8,
+                "riposo_sec": 120
+              }
+            ]
+          },
+          {
+            "giorno": "Martedì",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          },
+          {
+            "giorno": "Mercoledì",
+            "gruppi_muscolari": ["Petto", "Tricipiti"],
+            "esercizi": [
+              {
+                "nome": "Panca Piana",
+                "serie": 4,
+                "ripetizioni": 8,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Dip su parallele",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 60
+              }
+            ]
+          },
+          {
+            "giorno": "Giovedì",
+            "gruppi_muscolari": ["Gambe"],
+            "esercizi": [
+              {
+                "nome": "Squat",
+                "serie": 4,
+                "ripetizioni": 10,
+                "riposo_sec": 120
+              },
+              {
+                "nome": "Leg Curl",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 60
+              }
+            ]
+          },
+          {
+            "giorno": "Venerdì",
+            "gruppi_muscolari": ["Spalle", "Addome"],
+            "esercizi": [
+              {
+                "nome": "Military Press",
+                "serie": 3,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Crunch",
+                "serie": 3,
+                "ripetizioni": 20,
+                "riposo_sec": 45
+              }
+            ]
+          },
+          {
+            "giorno": "Sabato",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          },
+          {
+            "giorno": "Domenica",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "002",
+    "nome": "Marco",
+    "email": "marco@example.com",
+    "password_hash": "hashed_password2",
+    "allenamenti_salvati": [
+      {
+        "id_workout": "allenamento02",
+        "titolo": "Allenamento Full Body",
+        "descrizione": "Allenamento per tutto il corpo, adatto per principianti",
+        "data_creazione": "2025-04-15",
+        "creato_da_ai": false,
+        "settimana": [
+          {
+            "giorno": "Lunedì",
+            "gruppi_muscolari": ["Petto", "Bicipiti"],
+            "esercizi": [
+              {
+                "nome": "Panca Inclinata",
+                "serie": 3,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Curl con manubri",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 60
+              }
+            ]
+          },
+          {
+            "giorno": "Martedì",
+            "gruppi_muscolari": ["Gambe"],
+            "esercizi": [
+              {
+                "nome": "Leg Press",
+                "serie": 4,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Affondi",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 90
+              }
+            ]
+          },
+          {
+            "giorno": "Mercoledì",
+            "gruppi_muscolari": ["Spalle", "Addome"],
+            "esercizi": [
+              {
+                "nome": "Shoulder Press",
+                "serie": 3,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Crunch",
+                "serie": 4,
+                "ripetizioni": 15,
+                "riposo_sec": 45
+              }
+            ]
+          },
+          {
+            "giorno": "Giovedì",
+            "gruppi_muscolari": ["Schiena", "Trapezio"],
+            "esercizi": [
+              {
+                "nome": "Lat Machine",
+                "serie": 4,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Rematore con manubri",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 60
+              }
+            ]
+          },
+          {
+            "giorno": "Venerdì",
+            "gruppi_muscolari": ["Tricipiti", "Addome"],
+            "esercizi": [
+              {
+                "nome": "Pushdown con corda",
+                "serie": 4,
+                "ripetizioni": 10,
+                "riposo_sec": 60
+              },
+              {
+                "nome": "Leg Raises",
+                "serie": 3,
+                "ripetizioni": 20,
+                "riposo_sec": 45
+              }
+            ]
+          },
+          {
+            "giorno": "Sabato",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          },
+          {
+            "giorno": "Domenica",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "_id": "003",
+    "nome": "Anna",
+    "email": "anna@example.com",
+    "password_hash": "hashed_password3",
+    "allenamenti_salvati": [
+      {
+        "id_workout": "allenamento03",
+        "titolo": "Circuito Cardio e Forza",
+        "descrizione": "Allenamento ad alta intensità che combina forza e cardio",
+        "data_creazione": "2025-04-18",
+        "creato_da_ai": false,
+        "settimana": [
+          {
+            "giorno": "Lunedì",
+            "gruppi_muscolari": ["Petto", "Tricipiti"],
+            "esercizi": [
+              {
+                "nome": "Push-ups",
+                "serie": 4,
+                "ripetizioni": 15,
+                "riposo_sec": 60
+              },
+              {
+                "nome": "Tricipiti su panca",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 45
+              }
+            ]
+          },
+          {
+            "giorno": "Martedì",
+            "gruppi_muscolari": ["Gambe"],
+            "esercizi": [
+              {
+                "nome": "Squat",
+                "serie": 4,
+                "ripetizioni": 12,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Affondi con manubri",
+                "serie": 3,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              }
+            ]
+          },
+          {
+            "giorno": "Mercoledì",
+            "gruppi_muscolari": ["Schiena", "Bicipiti"],
+            "esercizi": [
+              {
+                "nome": "Deadlift",
+                "serie": 4,
+                "ripetizioni": 8,
+                "riposo_sec": 120
+              },
+              {
+                "nome": "Curl con barra",
+                "serie": 3,
+                "ripetizioni": 12,
+                "riposo_sec": 90
+              }
+            ]
+          },
+          {
+            "giorno": "Giovedì",
+            "gruppi_muscolari": ["Spalle", "Addome"],
+            "esercizi": [
+              {
+                "nome": "Military Press",
+                "serie": 3,
+                "ripetizioni": 10,
+                "riposo_sec": 90
+              },
+              {
+                "nome": "Plank",
+                "serie": 3,
+                "ripetizioni": 30,
+                "riposo_sec": 60
+              }
+            ]
+          },
+          {
+            "giorno": "Venerdì",
+            "gruppi_muscolari": ["Cardio"],
+            "esercizi": [
+              {
+                "nome": "Running",
+                "serie": 1,
+                "ripetizioni": 30,
+                "riposo_sec": 0
+              }
+            ]
+          },
+          {
+            "giorno": "Sabato",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          },
+          {
+            "giorno": "Domenica",
+            "gruppi_muscolari": [],
+            "esercizi": [],
+            "riposo": true
+          }
+        ]
+      }
+    ]
+  }
+]
