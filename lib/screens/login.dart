@@ -9,23 +9,25 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
+  bool _isLoading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final String server = "https://trainify-server.onrender.com";  
+  final String server = "https://trainify-server.onrender.com";
 
   void toggleForms() => setState(() => isLogin = !isLogin);
 
-  // Funzione per il login
-  Future<void> _login() async {
-    print("premuto login");
+  Future<void> _authAction() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      print('Username o password mancanti');
+      _showErrorDialog('Compila tutti i campi');
       return;
     }
 
+    setState(() => _isLoading = true);
+
     try {
+      final endpoint = isLogin ? 'login' : 'register';
       final response = await http.post(
-        Uri.parse('$server/login'),
+        Uri.parse('$server/$endpoint'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': _emailController.text,
@@ -34,193 +36,248 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (response.statusCode == 200) {
-        print('Login effettuato con successo');
         final data = jsonDecode(response.body);
-        print('Dati utente: $data');
-        // Navigazione, salvataggio dei dati utente, etc.
-
-        Navigator.pushReplacementNamed(
-          context,
-          '/home',
-          arguments: {'user': data['user']},
-        );
-
+        if (isLogin) {
+          Navigator.pushReplacementNamed(
+            context,
+            '/home',
+            arguments: {'user': data['user']},
+          );
+        } else {
+          _showSuccessDialog('Registrazione completata!');
+          toggleForms();
+        }
       } else {
-        print('Login fallito: ${response.body}');
+        _showErrorDialog(jsonDecode(response.body)['message'] ?? 'Errore sconosciuto');
       }
     } catch (e) {
-      print('Errore nella richiesta: $e');
+      _showErrorDialog('Errore di connessione');
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
-  // Funzione per la registrazione
-  Future<void> _register() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      print('Email o password mancanti');
-      return;
-    }
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1D22),
+        title: const Text('Errore', style: TextStyle(color: Colors.white)),
+        content: Text(message, style: TextStyle(color: Colors.white.withOpacity(0.8))),
+        actions: [
+          TextButton(
+            child: const Text('OK', style: TextStyle(color: Color(0xFFFF2D55))),
+            onPressed: () => Navigator.pop(ctx),
+          ),
+        ],
+      ),
+    );
+  }
 
-    try {
-      final response = await http.post(
-        Uri.parse('$server/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': _emailController.text,
-          'password': _passwordController.text,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        print('Registrazione avvenuta con successo');
-        final data = jsonDecode(response.body);
-        
-        print('Dati dell\'utente: $data');
-        // Navigazione, salvataggio dei dati utente, etc.
-      } else {
-        print('Registrazione fallita: ${response.body}');
-      }
-    } catch (e) {
-      print('Errore durante la registrazione: $e');
-    }
+  void _showSuccessDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1D22),
+        title: const Text('Successo', style: TextStyle(color: Colors.white)),
+        content: Text(message, style: TextStyle(color: Colors.white.withOpacity(0.8))),
+        actions: [
+          TextButton(
+            child: const Text('OK', style: TextStyle(color: Color(0xFFFF2D55))),
+            onPressed: () => Navigator.pop(ctx),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF060E15),
-      ),
+      backgroundColor: const Color(0xFF0A0E11),
       body: Center(
         child: SingleChildScrollView(
-          child: Container(
-            width: 300,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: const Color(0xFF131B23),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                ),
-              ],
-            ),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: toggleForms,
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          color: isLogin ? Colors.red : Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: toggleForms,
-                      child: Text(
-                        'Registrati',
-                        style: TextStyle(
-                          color: !isLogin ? Colors.red : Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Logo/Title
                 const SizedBox(height: 20),
-                if (isLogin) ...[
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      filled: true,
-                      fillColor: const Color(0xAA060E15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    style: const TextStyle(color: Colors.white),
+                const Text(
+                  'Trainify',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
                   ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      filled: true,
-                      fillColor: const Color(0xAA060E15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    style: const TextStyle(color: Colors.white),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  isLogin ? 'Accedi al tuo account' : 'Crea un nuovo account',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 16,
                   ),
-                  const SizedBox(height: 25),
-                  ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                ),
+                const SizedBox(height: 40),
+
+                // Auth Card
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1D22),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 20,
+                        spreadRadius: 2,
                       ),
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // Toggle Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextButton(
+                              onPressed: isLogin ? null : toggleForms,
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    bottomLeft: Radius.circular(8),
+                                  ),
+                                ),
+                                backgroundColor: isLogin ? const Color(0xFFFF2D55) : Colors.transparent,
+                              ),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: isLogin ? Colors.white : Colors.white.withOpacity(0.6),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: TextButton(
+                              onPressed: !isLogin ? null : toggleForms,
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(8),
+                                    bottomRight: Radius.circular(8),
+                                  ),
+                                ),
+                                backgroundColor: !isLogin ? const Color(0xFFFF2D55) : Colors.transparent,
+                              ),
+                              child: Text(
+                                'Registrati',
+                                style: TextStyle(
+                                  color: !isLogin ? Colors.white : Colors.white.withOpacity(0.6),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Form Fields
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                          filled: true,
+                          fillColor: const Color(0xFF0A0E11).withOpacity(0.5),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                          prefixIcon: Icon(Icons.email, color: Colors.white.withOpacity(0.7)),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                          filled: true,
+                          fillColor: const Color(0xFF0A0E11).withOpacity(0.5),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                          prefixIcon: Icon(Icons.lock, color: Colors.white.withOpacity(0.7)),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                        ),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Action Button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _authAction,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF2D55),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Text(
+                                  isLogin ? 'ACCEDI' : 'REGISTRATI',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Footer
+                const SizedBox(height: 40),
+                TextButton(
+                  onPressed: () {
+                    // Password dimenticata
+                  },
+                  child: Text(
+                    'Password dimenticata?',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                ],
-                if (!isLogin) ...[
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      filled: true,
-                      fillColor: const Color(0xAA060E15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      filled: true,
-                      fillColor: const Color(0xAA060E15),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 25),
-                  ElevatedButton(
-                    onPressed: _register,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    child: const Text(
-                      'Registrati',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+                ),
               ],
             ),
           ),
