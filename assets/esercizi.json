@@ -9,6 +9,7 @@
     { "_id": "0008", "nome": "Croci Manubri su Panca Inclinata", "gruppo_muscolare": "Petto" },
     { "_id": "0009", "nome": "Croci Cavi su Panca Piana", "gruppo_muscolare": "Petto" },
     { "_id": "0010", "nome": "Croci Cavi su Panca Inclinata", "gruppo_muscolare": "Petto" },
+    
     { "_id": "0011", "nome": "Stacchi da Terra", "gruppo_muscolare": "Schiena" },
     { "_id": "0012", "nome": "Rematore Bilanciere", "gruppo_muscolare": "Schiena" },
     { "_id": "0013", "nome": "Rematore Manubrio", "gruppo_muscolare": "Schiena" },

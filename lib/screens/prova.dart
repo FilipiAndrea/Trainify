@@ -1,37 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:trainify/screens/today_workout_page.dart';
 
-
-// Main HomePage widget
 class HomePage extends StatelessWidget {
-  Future<Map<String, dynamic>> fetchQuote() async {
-    final response = await http.get(
-      Uri.parse('https://zenquotes.io/api/today'),
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return {'quote': data[0]['q'], 'author': data[0]['a']};
-    } else {
-      throw Exception('Failed to load quote');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final String nomeUtente =
-        args['user']['nome']?.split(' ').first ?? 'Atleta';
+    final String nomeUtente = args['user']['nome']?.split(' ').first ?? 'Atleta';
     final int streakCount = args['user']['streak'] ?? 5;
+
     final dynamic user = args['user'];
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E11),
       body: Column(
         children: [
-          // Header section
+          // Header con gradiente e contenuto
           Container(
             padding: const EdgeInsets.fromLTRB(24, 56, 24, 24),
             decoration: BoxDecoration(
@@ -47,7 +31,7 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Welcome and streak counter
+                // Benvenuto e streak counter
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -72,12 +56,10 @@ class HomePage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // Streak counter
+                    // Streak counter con effetto fiamma
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFFFF2D55), Color(0xFFFF5C35)],
@@ -102,18 +84,15 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 4),
-                          const Icon(
-                            Icons.local_fire_department,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                          const Icon(Icons.local_fire_department,
+                              color: Colors.white, size: 20),
                         ],
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 24),
-                // Today's workout card
+                // Card motivazionale
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -136,7 +115,7 @@ class HomePage extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Completa il tuo workout per mantenere la streak!',
+                              'Completa il tuo workout per mantenere lo streak!',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.7),
                                 fontSize: 14,
@@ -145,102 +124,24 @@ class HomePage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Icon(
-                        Icons.fitness_center,
-                        color: Color(0xFFFF2D55),
-                        size: 32,
-                      ),
+                      const Icon(Icons.fitness_center,
+                          color: Color(0xFFFF2D55), size: 32),
                     ],
                   ),
-                ),
-                const SizedBox(height: 16),
-
-                // Motivational quote card
-                FutureBuilder<Map<String, dynamic>>(
-                  future: fetchQuote(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A1D22).withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Color(0xFFFF2D55),
-                          ),
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A1D22).withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'Impossibile caricare la citazione',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      );
-                    } else {
-                      final quote = snapshot.data!;
-                      return Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1A1D22),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '"${quote['quote']}"',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.9),
-                                      fontSize: 14,
-                                      fontStyle: FontStyle.italic,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    '- ${quote['author']}',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.7),
-                                      fontSize: 12,
-                                    ),
-                                    textAlign: TextAlign.end,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Icon(
-                              Icons.format_quote,
-                              color: Color(0xFFFF2D55),
-                              size: 32,
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
                 ),
               ],
             ),
           ),
 
-          // Main buttons section
+          // Corpo centrale con pulsanti
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  WorkoutButton(
+                  // Bottone ALLENATI OGGI
+                  _WorkoutButton(
                     title: "ALLENATI OGGI",
                     subtitle: "Inizia il workout programmato",
                     icon: Icons.play_arrow_rounded,
@@ -249,14 +150,16 @@ class HomePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => TodayWorkoutPage(user: args['user']),
+                          builder: (context) =>
+                              TodayWorkoutPage(user: args['user']),
                         ),
                       );
                     },
                   ),
                   const SizedBox(height: 20),
-                  WorkoutButton(
+
+                  // Bottone FREESTYLE
+                  _WorkoutButton(
                     title: "FREESTYLE",
                     subtitle: "Crea il tuo allenamento",
                     icon: Icons.tune,
@@ -272,28 +175,26 @@ class HomePage extends StatelessWidget {
             ),
           ),
 
-          CustomBottomNavBar(
-            currentIndex: 1, // Imposta a 1 per evidenziare il bottone centrale
+          // Versione completa con gestione del tap sull'icona home
+          _CustomBottomNavBar(
+            currentIndex: 0,
             onItemSelected: (index) {
               if (index == 0) {
-                // Bottone Crea - Apri la pagina per creare un nuovo allenamento
-                Navigator.pushNamed(
+                Navigator.pushNamedAndRemoveUntil(
                   context,
-                  '/create-workout',
+                  '/home',
+                  (route) => false,
                   arguments: {'user': user},
                 );
-              } else if (index == 1) {
-                // Bottone Workout - Se siamo già nella home, non fare nulla
-                if (ModalRoute.of(context)?.settings.name != '/home') {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/home',
-                    (route) => false,
-                    arguments: {'user': user},
-                  );
-                }
-              } else if (index == 2) {
-                // Bottone Profilo
+              }
+              else if (index == 1) {
+                Navigator.pushNamed(
+                  context,
+                  '/progressi',
+                  arguments: {'user': user},
+                );
+              }
+              else if (index == 2) {
                 Navigator.pushNamed(
                   context,
                   '/profile',
@@ -308,8 +209,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Workout Button Component (renamed from _WorkoutButton to WorkoutButton)
-class WorkoutButton extends StatelessWidget {
+// Componente pulsante workout riutilizzabile
+class _WorkoutButton extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
@@ -318,7 +219,7 @@ class WorkoutButton extends StatelessWidget {
   final Color textColor;
   final VoidCallback onPressed;
 
-  const WorkoutButton({
+  const _WorkoutButton({
     required this.title,
     required this.subtitle,
     required this.icon,
@@ -342,17 +243,19 @@ class WorkoutButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: borderColor, width: 2),
+            border: Border.all(
+              color: borderColor,
+              width: 2,
+            ),
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color:
-                      color == Colors.transparent
-                          ? const Color(0xFFFF2D55).withOpacity(0.2)
-                          : Colors.white.withOpacity(0.1),
+                  color: color == Colors.transparent
+                      ? const Color(0xFFFF2D55).withOpacity(0.2)
+                      : Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: Colors.white, size: 28),
@@ -381,11 +284,8 @@ class WorkoutButton extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.chevron_right,
-                color: textColor.withOpacity(0.7),
-                size: 28,
-              ),
+              Icon(Icons.chevron_right,
+                  color: textColor.withOpacity(0.7), size: 28),
             ],
           ),
         ),
@@ -394,11 +294,12 @@ class WorkoutButton extends StatelessWidget {
   }
 }
 
-class CustomBottomNavBar extends StatelessWidget {
+// Barra di navigazione personalizzata
+class _CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onItemSelected;
 
-  const CustomBottomNavBar({
+  const _CustomBottomNavBar({
     required this.currentIndex,
     required this.onItemSelected,
   });
@@ -409,82 +310,82 @@ class CustomBottomNavBar extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
       decoration: BoxDecoration(
-        color: const Color(0xFF0E1215), // Sfondo più scuro
+        color: const Color(0xFF1A1D22),
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.7),
-            blurRadius: 15,
-            spreadRadius: 3,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 10,
+            spreadRadius: 2,
           ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(
-            icon: Icons.add,
-            label: 'Crea',
-            index: 0,
-          ),
-          _buildNavItem(
+          _NavButton(
             icon: Icons.fitness_center,
             label: 'Workout',
-            index: 1,
+            isActive: currentIndex == 0,
+            onPressed: () => onItemSelected(0),
           ),
-          _buildNavItem(
+          _NavButton(
+            icon: Icons.bar_chart,
+            label: 'Progressi',
+            isActive: currentIndex == 1,
+            onPressed: () => onItemSelected(1),
+          ),
+          _NavButton(
             icon: Icons.person,
             label: 'Profilo',
-            index: 2,
+            isActive: currentIndex == 2,
+            onPressed: () => onItemSelected(2),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildNavItem({
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
-    final bool isActive = currentIndex == index;
-    
-    return GestureDetector(
-      onTap: () => onItemSelected(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
+// Pulsante di navigazione singolo
+class _NavButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onPressed;
+
+  const _NavButton({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          onPressed: onPressed,
+          icon: Icon(
             icon,
-            size: 26,
+            size: 28,
             color: isActive
                 ? const Color(0xFFFF2D55)
-                : Colors.white.withOpacity(0.6),
+                : Colors.white.withOpacity(0.5),
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive
-                  ? const Color(0xFFFF2D55)
-                  : Colors.white.withOpacity(0.6),
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-            ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: isActive
+                ? const Color(0xFFFF2D55)
+                : Colors.white.withOpacity(0.5),
+            fontSize: 12,
           ),
-          const SizedBox(height: 6),
-          if (isActive)
-            Container(
-              width: 24,
-              height: 3,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFF2D55),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

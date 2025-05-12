@@ -33,6 +33,8 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,10 +42,6 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profilo', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF060E15),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.white),
@@ -51,27 +49,68 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Sezione Avatar e Informazioni Base
-            _buildUserHeader(),
-            const SizedBox(height: 30),
-            
-            // Sezione Statistiche
-            _buildStatsSection(),
-            const SizedBox(height: 30),
-            
-            // Sezione Impostazioni
-            _buildSettingsSection(context),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Sezione Avatar e Informazioni Base
+                  _buildUserHeader(),
+                  const SizedBox(height: 30),
+                  
+                  // Sezione Statistiche
+                  _buildStatsSection(),
+                  const SizedBox(height: 30),
+                  
+                  // Sezione Impostazioni
+                  _buildSettingsSection(context),
+                ],
+              ),
+            ),
+          ),
+          
+          // Aggiunta della CustomBottomNavBar
+          CustomBottomNavBar(
+            currentIndex: 2, // Modificato da 1 a 2 per evidenziare Profilo
+            onItemSelected: (index) {
+              if (index == 0) {
+                // Bottone Crea - Apri la pagina per creare un nuovo allenamento
+                Navigator.pushNamed(
+                  context,
+                  '/create-workout',
+                  arguments: {'user': user},
+                );
+              }
+              else if (index == 1) {
+                // Bottone Workout - Torna alla home
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/home',
+                  (route) => false,
+                  arguments: {'user': user},
+                );
+              }
+              else if (index == 2) {
+                // Bottone Profilo - Se siamo già nel profilo, non fare nulla
+                if (ModalRoute.of(context)?.settings.name != '/profile') {
+                  Navigator.pushNamed(
+                    context,
+                    '/profile',
+                    arguments: {'user': user},
+                  );
+                }
+              }
+            },
+          ),
+        ],
       ),
     );
   }
 
+  // ... (tutti gli altri metodi rimangono invariati)
   Widget _buildUserHeader() {
     final avatarUrl = _getUserData('avatarUrl');
     final nome = _getUserData('nome') ?? 'Utente';
@@ -296,6 +335,102 @@ class ProfilePage extends StatelessWidget {
               Navigator.popUntil(context, ModalRoute.withName('/login'));
             },
           ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class CustomBottomNavBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onItemSelected;
+
+  const CustomBottomNavBar({
+    required this.currentIndex,
+    required this.onItemSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0E1215), // Sfondo più scuro
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.7),
+            blurRadius: 15,
+            spreadRadius: 3,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildNavItem(
+            icon: Icons.add,
+            label: 'Crea',
+            index: 0,
+          ),
+          _buildNavItem(
+            icon: Icons.fitness_center,
+            label: 'Workout',
+            index: 1,
+          ),
+          _buildNavItem(
+            icon: Icons.person,
+            label: 'Profilo',
+            index: 2,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    final bool isActive = currentIndex == index;
+    
+    return GestureDetector(
+      onTap: () => onItemSelected(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 26,
+            color: isActive
+                ? const Color(0xFFFF2D55)
+                : Colors.white.withOpacity(0.6),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: isActive
+                  ? const Color(0xFFFF2D55)
+                  : Colors.white.withOpacity(0.6),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 6),
+          if (isActive)
+            Container(
+              width: 24,
+              height: 3,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFF2D55),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
         ],
       ),
     );
