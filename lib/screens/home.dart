@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
           // Recupera i dati dell'utente dalla risposta
           final user = snapshot.data!;
           final nomeUtente = user['nome']?.split(' ').first ?? 'Atleta';
-          final streakCount = user['streak'] ?? 5;
+          final streakCount = user['stk_settimanale'] ?? 5;
 
           return Scaffold(
             backgroundColor: const Color(0xFF0A0E11),

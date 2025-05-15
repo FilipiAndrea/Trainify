@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
   final dynamic user;
@@ -33,14 +34,12 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E11),
       appBar: AppBar(
-        automaticallyImplyLeading: false, 
+        automaticallyImplyLeading: false,
         title: const Text('Profilo', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF060E15),
         actions: [
@@ -61,18 +60,18 @@ class ProfilePage extends StatelessWidget {
                   // Sezione Avatar e Informazioni Base
                   _buildUserHeader(),
                   const SizedBox(height: 30),
-                  
+
                   // Sezione Statistiche
                   _buildStatsSection(),
                   const SizedBox(height: 30),
-                  
+
                   // Sezione Impostazioni
                   _buildSettingsSection(context),
                 ],
               ),
             ),
           ),
-          
+
           // Aggiunta della CustomBottomNavBar
           CustomBottomNavBar(
             currentIndex: 2, // Modificato da 1 a 2 per evidenziare Profilo
@@ -84,8 +83,7 @@ class ProfilePage extends StatelessWidget {
                   '/create-workout',
                   arguments: {'user': user},
                 );
-              }
-              else if (index == 1) {
+              } else if (index == 1) {
                 // Bottone Workout - Torna alla home
                 Navigator.pushNamedAndRemoveUntil(
                   context,
@@ -93,8 +91,7 @@ class ProfilePage extends StatelessWidget {
                   (route) => false,
                   arguments: {'user': user},
                 );
-              }
-              else if (index == 2) {
+              } else if (index == 2) {
                 // Bottone Profilo - Se siamo già nel profilo, non fare nulla
                 if (ModalRoute.of(context)?.settings.name != '/profile') {
                   Navigator.pushNamed(
@@ -121,12 +118,12 @@ class ProfilePage extends StatelessWidget {
       children: [
         CircleAvatar(
           radius: 50,
-          backgroundImage: avatarUrl != null 
-              ? NetworkImage(avatarUrl.toString()) 
-              : null,
-          child: avatarUrl == null 
-              ? const Icon(Icons.person, size: 50, color: Colors.white)
-              : null,
+          backgroundImage:
+              avatarUrl != null ? NetworkImage(avatarUrl.toString()) : null,
+          child:
+              avatarUrl == null
+                  ? const Icon(Icons.person, size: 50, color: Colors.white)
+                  : null,
         ),
         const SizedBox(height: 20),
         Text(
@@ -140,10 +137,7 @@ class ProfilePage extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           email,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
-            fontSize: 16,
-          ),
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 16),
         ),
       ],
     );
@@ -185,10 +179,7 @@ class ProfilePage extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(
-            color: Colors.white.withOpacity(0.7),
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14),
         ),
       ],
     );
@@ -247,10 +238,7 @@ class ProfilePage extends StatelessWidget {
         ),
         child: Icon(icon, color: Colors.white),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white),
-      ),
+      title: Text(title, style: const TextStyle(color: Colors.white)),
       trailing: const Icon(Icons.chevron_right, color: Colors.grey),
       onTap: onTap,
     );
@@ -272,76 +260,72 @@ class ProfilePage extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFFF2D55),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         onPressed: () => _confirmLogout(context),
         child: const Text(
           'ESCI',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
   void _navigateToEditProfile(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      '/editProfile',
-      arguments: user,
-    );
+    Navigator.pushNamed(context, '/editProfile', arguments: user);
   }
 
   void _navigateToNotifications(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      '/notifications',
-      arguments: user,
-    );
+    Navigator.pushNamed(context, '/notifications', arguments: user);
   }
 
   void _navigateToPrivacy(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      '/privacy',
-      arguments: user,
-    );
+    Navigator.pushNamed(context, '/privacy', arguments: user);
   }
 
   void _confirmLogout(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1D22),
-        title: const Text(
-          'Conferma uscita',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: const Text(
-          'Sei sicuro di voler uscire dal tuo account?',
-          style: TextStyle(color: Colors.white70),
-        ),
-        actions: [
-          TextButton(
-            child: const Text('ANNULLA', style: TextStyle(color: Colors.white70)),
-            onPressed: () => Navigator.pop(context),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: const Color(0xFF1A1D22),
+            title: const Text(
+              'Conferma uscita',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: const Text(
+              'Sei sicuro di voler uscire dal tuo account?',
+              style: TextStyle(color: Colors.white70),
+            ),
+            actions: [
+              TextButton(
+                child: const Text(
+                  'ANNULLA',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+              TextButton(
+                child: const Text(
+                  'ESCI',
+                  style: TextStyle(color: Color(0xFFFF2D55)),
+                ),
+                onPressed: () async {
+                  // 1. Cancella SharedPreferences
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('jwt_token');
+                  await prefs.remove('user_id');
+                  await prefs.remove('user_data');
+
+                  // 2. Chiudi tutti i route e torna al login
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+              ),
+            ],
           ),
-          TextButton(
-            child: const Text('ESCI', style: TextStyle(color: Color(0xFFFF2D55))),
-            onPressed: () {
-              Navigator.popUntil(context, ModalRoute.withName('/login'));
-            },
-          ),
-        ],
-      ),
     );
   }
 }
-
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -372,21 +356,9 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildNavItem(
-            icon: Icons.add,
-            label: 'Crea',
-            index: 0,
-          ),
-          _buildNavItem(
-            icon: Icons.fitness_center,
-            label: 'Workout',
-            index: 1,
-          ),
-          _buildNavItem(
-            icon: Icons.person,
-            label: 'Profilo',
-            index: 2,
-          ),
+          _buildNavItem(icon: Icons.add, label: 'Crea', index: 0),
+          _buildNavItem(icon: Icons.fitness_center, label: 'Workout', index: 1),
+          _buildNavItem(icon: Icons.person, label: 'Profilo', index: 2),
         ],
       ),
     );
@@ -398,7 +370,7 @@ class CustomBottomNavBar extends StatelessWidget {
     required int index,
   }) {
     final bool isActive = currentIndex == index;
-    
+
     return GestureDetector(
       onTap: () => onItemSelected(index),
       child: Column(
@@ -407,17 +379,19 @@ class CustomBottomNavBar extends StatelessWidget {
           Icon(
             icon,
             size: 26,
-            color: isActive
-                ? const Color(0xFFFF2D55)
-                : Colors.white.withOpacity(0.6),
+            color:
+                isActive
+                    ? const Color(0xFFFF2D55)
+                    : Colors.white.withOpacity(0.6),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: isActive
-                  ? const Color(0xFFFF2D55)
-                  : Colors.white.withOpacity(0.6),
+              color:
+                  isActive
+                      ? const Color(0xFFFF2D55)
+                      : Colors.white.withOpacity(0.6),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

@@ -84,95 +84,94 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
           appBar: AppBar(
             title: Text(todayCapitalized), // Solo il testo del giorno
             centerTitle: true,
-            backgroundColor: const Color(0xFF060E15),
+            backgroundColor: const Color(0xFF0A0E11),
             elevation: 0,
           ),
           body: Column(
             children: [
               // Sostituisci questa parte nel tuo codice
 // Header con info workout
-Container(
-  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-  decoration: BoxDecoration(
-    color: const Color(0xFF1A1D22),
-    borderRadius: const BorderRadius.only(
-      bottomLeft: Radius.circular(24),
-      bottomRight: Radius.circular(24),
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.3),
-        blurRadius: 12,
-        spreadRadius: 2,
-      ),
-    ],
-    gradient: LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [
-        const Color(0xFF252A32),
-        const Color(0xFF1A1D22),
-      ],
-    ),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Expanded(
-            child: Text(
-              workout['titolo']?.toUpperCase() ?? 'ALLENAMENTO',
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.9),
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-                height: 1.2,
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(24),
+                  bottomRight: Radius.circular(24),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 12,
+                    spreadRadius: 2,
+                  ),
+                ],
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color(0xFF0A0E11),  // Dark
+                    const Color(0xFF2D343C),  // Lighter
+                  ],
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          workout['titolo']?.toUpperCase() ?? 'ALLENAMENTO',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    workout['descrizione'] ?? 'Sessione di allenamento personalizzata',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 15,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: muscleGroups.map((group) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF2D55).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFFFF2D55).withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          group.toUpperCase(),
+                          style: TextStyle(
+                            color: const Color(0xFFFF2D55),
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                      )).toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 12),
-      Text(
-        workout['descrizione'] ?? 'Sessione di allenamento personalizzata',
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: 15,
-          height: 1.4,
-        ),
-      ),
-      const SizedBox(height: 16),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: muscleGroups.map((group) => Container(
-            margin: const EdgeInsets.only(right: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFF2D55).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: const Color(0xFFFF2D55).withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-            child: Text(
-              group.toUpperCase(),
-              style: TextStyle(
-                color: const Color(0xFFFF2D55),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-              ),
-            ),
-          )).toList(),
-        ),
-      ),
-    ],
-  ),
-),
               // Lista esercizi
               Expanded(
                 child: ListView.separated(
@@ -219,6 +218,7 @@ Container(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.2,
+                              color: Colors.white,
                             ),
                           ),
                   ),
@@ -245,7 +245,7 @@ Container(
     final nome = esercizio['nome'] ?? 'Esercizio sconosciuto';
     final serie = esercizioGiorno['serie']?.toString() ?? '-';
     final ripetizioni = esercizioGiorno['ripetizioni']?.toString() ?? '-';
-    final riposo = esercizioGiorno['riposo_sec']?.toString() ?? '-';
+
 
     return Container(
       decoration: BoxDecoration(
@@ -302,7 +302,6 @@ Container(
                     children: [
                       _buildExerciseDetail('Serie', serie),
                       _buildExerciseDetail('Ripetizioni', ripetizioni),
-                      _buildExerciseDetail('Riposo', '$riposo s'),
                     ],
                   ),
                 ],
