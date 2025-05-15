@@ -40,6 +40,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0A0E11),
       appBar: AppBar(
+        automaticallyImplyLeading: false, 
         title: const Text('Profilo', style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xFF060E15),
         actions: [
