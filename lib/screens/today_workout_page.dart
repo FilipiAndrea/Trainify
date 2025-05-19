@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TodayWorkoutPage extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -20,11 +21,14 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
   void initState() {
     super.initState();
     _eserciziCompleti = _loadEserciziDaAssets();
+    controllaSeCompletato();
   }
 
   Future<Map<String, dynamic>> _loadEserciziDaAssets() async {
     try {
-      final String jsonString = await rootBundle.loadString('assets/esercizi.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/esercizi.json',
+      );
       final List<dynamic> jsonList = jsonDecode(jsonString);
       return {for (var esercizio in jsonList) esercizio['_id']: esercizio};
     } catch (e) {
@@ -32,9 +36,27 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
     }
   }
 
+  bool allenamentoCompletato = false;
+
+  Future<bool> isAllenamentoCompletato() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('allenamento_today') ?? false;
+  }
+
+
+  void controllaSeCompletato() async {
+    final completato = await isAllenamentoCompletato();
+    setState(() {
+      allenamentoCompletato = completato;
+      print('Allenamento completato: $allenamentoCompletato');
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    final today = DateFormat('EEEE', 'it_IT').format(DateTime.now()).toLowerCase();
+    final today =
+        DateFormat('EEEE', 'it_IT').format(DateTime.now()).toLowerCase();
     final todayCapitalized = today[0].toUpperCase() + today.substring(1);
 
     final allenamenti = widget.user['allenamenti_salvati'];
@@ -50,7 +72,10 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
     );
 
     if (workout == null) {
-      return _buildEmptyState(todayCapitalized, "Nessun workout previsto per oggi");
+      return _buildEmptyState(
+        todayCapitalized,
+        "Nessun workout previsto per oggi",
+      );
     }
 
     final settimana = workout['settimana'] as List<dynamic>;
@@ -73,7 +98,10 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
         }
 
         if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-          return _buildEmptyState(todayCapitalized, "Errore nel caricamento degli esercizi");
+          return _buildEmptyState(
+            todayCapitalized,
+            "Errore nel caricamento degli esercizi",
+          );
         }
 
         final eserciziCompleti = snapshot.data!;
@@ -90,94 +118,111 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
           body: Column(
             children: [
               // Sostituisci questa parte nel tuo codice
-// Header con info workout
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
+              // Header con info workout
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 20,
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 12,
-                    spreadRadius: 2,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
                   ),
-                ],
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF0A0E11),  // Dark
-                    const Color(0xFF2D343C),  // Lighter
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0xFF0A0E11), // Dark
+                      const Color(0xFF2D343C), // Lighter
+                    ],
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            workout['titolo']?.toUpperCase() ?? 'ALLENAMENTO',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.2,
+                              height: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      workout['descrizione'] ??
+                          'Sessione di allenamento personalizzata',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: 15,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children:
+                            muscleGroups
+                                .map(
+                                  (group) => Container(
+                                    margin: const EdgeInsets.only(right: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                        0xFFFF2D55,
+                                      ).withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: const Color(
+                                          0xFFFF2D55,
+                                        ).withOpacity(0.3),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      group.toUpperCase(),
+                                      style: TextStyle(
+                                        color: const Color(0xFFFF2D55),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.8,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          workout['titolo']?.toUpperCase() ?? 'ALLENAMENTO',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.9),
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.2,
-                            height: 1.2,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    workout['descrizione'] ?? 'Sessione di allenamento personalizzata',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 15,
-                      height: 1.4,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: muscleGroups.map((group) => Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFF2D55).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: const Color(0xFFFF2D55).withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          group.toUpperCase(),
-                          style: TextStyle(
-                            color: const Color(0xFFFF2D55),
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.8,
-                          ),
-                        ),
-                      )).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
               // Lista esercizi
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.all(16),
                   itemCount: eserciziGiorno.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder:
+                      (context, index) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final esercizioGiorno = eserciziGiorno[index];
                     final id = esercizioGiorno['id_esercizio'];
@@ -201,9 +246,17 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : () => _startWorkout(context, eserciziGiorno, eserciziCompleti),
+                    onPressed: (_isLoading || allenamentoCompletato)
+                        ? null
+                        : () => _startWorkout(
+                              context,
+                              eserciziGiorno,
+                              eserciziCompleti,
+                            ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF2D55),
+                      backgroundColor: (_isLoading || allenamentoCompletato)
+                          ? Colors.grey
+                          : const Color(0xFFFF2D55),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -211,10 +264,14 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
                       elevation: 4,
                     ),
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            'INIZIA ALLENAMENTO',
-                            style: TextStyle(
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : Text(
+                            allenamentoCompletato
+                                ? 'ALLENAMENTO COMPLETATO'
+                                : 'INIZIA ALLENAMENTO',
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.2,
@@ -223,7 +280,8 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
                           ),
                   ),
                 ),
-              ),
+              )
+
             ],
           ),
         );
@@ -241,11 +299,14 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
     }
   }
 
-  Widget _buildExerciseCard(Map<String, dynamic> esercizio, Map<String, dynamic> esercizioGiorno, int index) {
+  Widget _buildExerciseCard(
+    Map<String, dynamic> esercizio,
+    Map<String, dynamic> esercizioGiorno,
+    int index,
+  ) {
     final nome = esercizio['nome'] ?? 'Esercizio sconosciuto';
     final serie = esercizioGiorno['serie']?.toString() ?? '-';
     final ripetizioni = esercizioGiorno['ripetizioni']?.toString() ?? '-';
-
 
     return Container(
       decoration: BoxDecoration(
@@ -379,7 +440,7 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
   ) async {
     setState(() => _isLoading = true);
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     Navigator.pushNamed(
       context,
       '/activeWorkout',
@@ -468,9 +529,7 @@ class _TodayWorkoutPageState extends State<TodayWorkoutPage> {
               Text(
                 'Lascia che i tuoi muscoli si riprendano per la prossima sessione',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
-                ),
+                style: TextStyle(color: Colors.white.withOpacity(0.6)),
               ),
             ],
           ),

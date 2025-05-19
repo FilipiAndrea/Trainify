@@ -41,7 +41,7 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Profilo', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF060E15),
+        backgroundColor: const Color(0xFF0A0E11),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.white),
@@ -316,6 +316,7 @@ class ProfilePage extends StatelessWidget {
                   await prefs.remove('jwt_token');
                   await prefs.remove('user_id');
                   await prefs.remove('user_data');
+                  await prefs.remove('allenamento_today');
 
                   // 2. Chiudi tutti i route e torna al login
                   Navigator.pushReplacementNamed(context, '/login');

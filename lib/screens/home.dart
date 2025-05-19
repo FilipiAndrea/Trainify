@@ -22,6 +22,12 @@ Future<Map<String, dynamic>> fetchUserData(String token) async {
   }
 }
 
+Future<void> saveUserDataLocally(Map<String, dynamic> userData) async {
+  final prefs = await SharedPreferences.getInstance();
+  final userJson = json.encode(userData);
+  await prefs.setString('user_data', userJson);
+}
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,10 +41,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadUserData();
+    
   }
 
   // Carica i dati dell'utente
-  Future<void> _loadUserData() async {
+  /*Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('jwt_token');
 
@@ -49,6 +56,40 @@ class _HomePageState extends State<HomePage> {
     } else {
       Navigator.pushReplacementNamed(context, '/login');
     }
+  }*/
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+
+    if (token != null) {
+      // Prova a caricare da SharedPreferences
+      final localData = await loadUserDataFromPrefs();
+      if (localData != null) {
+        setState(() {
+          _userData = Future.value(localData);
+        });
+      } else {
+        // Se non trovato localmente, fetch remoto
+        final fetchedData = await fetchUserData(token);
+        await saveUserDataLocally(fetchedData);
+        setState(() {
+          _userData = Future.value(fetchedData);
+        });
+      }
+    } else {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+
+  Future<Map<String, dynamic>?> loadUserDataFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user_data');
+    if (userJson != null) {
+      return json.decode(userJson);
+    }
+    return null;
   }
 
    Future<Map<String, dynamic>> fetchQuote() async {
@@ -363,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                       // Bottone Crea - Apri la pagina per creare un nuovo allenamento
                       Navigator.pushNamed(
                         context,
-                        '/create-workout',
+                        '/allenamento',
                         arguments: {'user': user},
                       );
                     } else if (index == 1) {

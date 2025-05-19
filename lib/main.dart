@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trainify/screens/cMan_workout_page.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
 import 'screens/c_workout_page.dart';
@@ -30,7 +31,8 @@ class TrainifyApp extends StatelessWidget {
         '/': (context) => SplashScreen(),
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
-        '/allenamento': (context) => WorkoutPage(),
+        '/allenamento': (context) => CreateWorkoutPage(),
+        '/allenamentoManuale' : (context) => ManualWorkoutCreationPage(),
         '/workoutOggi': (context) {
           final args =
               ModalRoute.of(context)!.settings.arguments
