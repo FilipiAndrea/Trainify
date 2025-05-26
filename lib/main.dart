@@ -7,6 +7,7 @@ import 'screens/today_workout_page.dart';
 import 'screens/active_workout_page.dart';
 import 'screens/profile_page.dart';
 import 'utils/check_login.dart';
+import 'screens/workout_selection_page.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -33,6 +34,7 @@ class TrainifyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/allenamento': (context) => CreateWorkoutPage(),
         '/allenamentoManuale' : (context) => ManualWorkoutCreationPage(),
+        '/workoutSelection': (context) => WorkoutSelectionPage(),
         '/workoutOggi': (context) {
           final args =
               ModalRoute.of(context)!.settings.arguments

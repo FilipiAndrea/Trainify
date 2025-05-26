@@ -74,6 +74,19 @@ flutter:
     - assets/esercizi.json
     - assets/icona.jpg
     - assets/datiEsercizi.json
+    - fonts/NewYork.ttf
+    - fonts/NewYorkSmall-Bold.otf
+    - fonts/NewYorkItalic.ttf
+
+  fonts:
+    - family: NewYork
+      fonts:
+        - asset: fonts/NewYork.ttf
+          weight: 400
+        - asset: fonts/NewYorkSmall-Bold.otf
+          weight: 700
+        - asset: fonts/NewYorkItalic.ttf
+          style: italic
 
   # To add assets to your application, add an assets section, like this:
   # assets:

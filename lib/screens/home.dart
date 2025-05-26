@@ -178,6 +178,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 'Bentornato,',
                                 style: TextStyle(
+                                  fontFamily: 'NewYork',
                                   color: Colors.white.withOpacity(0.7),
                                   fontSize: 16,
                                 ),
@@ -186,6 +187,7 @@ class _HomePageState extends State<HomePage> {
                               Text(
                                 nomeUtente,
                                 style: const TextStyle(
+                                  fontFamily: 'NewYork',
                                   color: Colors.white,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -254,6 +256,7 @@ class _HomePageState extends State<HomePage> {
                                   const Text(
                                     'Allenamento di oggi',
                                     style: TextStyle(
+                                      fontFamily: 'NewYork',
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -263,6 +266,7 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                     'Completa il tuo workout per mantenere la streak!',
                                     style: TextStyle(
+                                      fontFamily: 'NewYork',
                                       color: Colors.white.withOpacity(0.7),
                                       fontSize: 14,
                                     ),
@@ -365,32 +369,106 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        WorkoutButton(
-                          title: "ALLENATI OGGI",
-                          subtitle: "Inizia il workout programmato",
-                          icon: Icons.play_arrow_rounded,
-                          color: const Color(0xFFFF2D55),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => TodayWorkoutPage(user: user),
+                        // Primo pulsante con gradient e shadow
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFFFF2D55), Color(0xFFFF6B9D)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFFFF2D55).withOpacity(0.3),
+                                blurRadius: 20,
+                                spreadRadius: 0,
+                                offset: Offset(0, 8),
                               ),
-                            );
-                          },
+                            ],
+                          ),
+                          child: WorkoutButton(
+                            title: "ALLENATI OGGI",
+                            subtitle: "Inizia il workout programmato",
+                            icon: Icons.play_arrow_rounded,
+                            color: Colors.transparent,
+                            textColor: Colors.white,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TodayWorkoutPage(user: user),
+                                ),
+                              );
+                            },
+                          ),
                         ),
+                        
                         const SizedBox(height: 20),
-                        WorkoutButton(
-                          title: "FREESTYLE",
-                          subtitle: "Crea il tuo allenamento",
-                          icon: Icons.tune,
-                          color: Colors.transparent,
-                          borderColor: const Color(0xFFFF2D55),
-                          textColor: Colors.white,
-                          onPressed: () {
-                            // Navigator.push per freestyle
-                          },
+                        
+                        // Secondo pulsante con bordo e trasparenza
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: const Color(0xFFFF2D55),
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFFFF2D55).withOpacity(0.2),
+                                blurRadius: 10,
+                                spreadRadius: 0,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: WorkoutButton(
+                            title: "FREESTYLE",
+                            subtitle: "Crea il tuo allenamento",
+                            icon: Icons.tune,
+                            color: Colors.transparent,
+                            borderColor: Colors.transparent, // Il bordo è gestito dal Container
+                            textColor: Colors.white,
+                            onPressed: () {
+                              // Navigator.push per freestyle
+                            },
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 20),
+                        
+                        // Terzo pulsante per selezione allenamento
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFFFF2D55), Color(0xFFFF6B9D)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFFFF2D55).withOpacity(0.3),
+                                blurRadius: 20,
+                                spreadRadius: 0,
+                                offset: Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: WorkoutButton(
+                            title: "SELEZIONA ALLENAMENTO",
+                            subtitle: "Scegli il tuo workout preferito",
+                            icon: Icons.fitness_center,
+                            color: Colors.transparent,
+                            textColor: Colors.white,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/workoutSelection',
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
