@@ -44,6 +44,27 @@ class _HomePageState extends State<HomePage> {
     
   }
 
+  Future<Map<String, dynamic>?> _getSelectedWorkout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('jwt_token');
+    if (token == null) return null;
+
+    final response = await http.get(
+      Uri.parse('https://trainify-server.onrender.com/user'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      print("Allenamenti recuperati con successo");
+      final data = json.decode(response.body);
+      final workouts = List<Map<String, dynamic>>.from(data['allenamenti_salvati'] ?? []);
+      final selected = workouts.where((w) => w['selected'] == true).toList();
+      return selected.isNotEmpty ? selected.first : null;
+    }
+    return null;
+  }
+
+
   // Carica i dati dell'utente
   /*Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -393,11 +414,12 @@ class _HomePageState extends State<HomePage> {
                             icon: Icons.play_arrow_rounded,
                             color: Colors.transparent,
                             textColor: Colors.white,
-                            onPressed: () {
+                            onPressed: () async {
+                              final selectedWorkout = await _getSelectedWorkout();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => TodayWorkoutPage(user: user),
+                                  builder: (context) => TodayWorkoutPage(selectedWorkout: selectedWorkout),
                                 ),
                               );
                             },
@@ -432,6 +454,10 @@ class _HomePageState extends State<HomePage> {
                             textColor: Colors.white,
                             onPressed: () {
                               // Navigator.push per freestyle
+                              Navigator.pushNamed(
+                                context,
+                                '/freestyleWorkout',
+                              );
                             },
                           ),
                         ),

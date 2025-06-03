@@ -23,7 +23,7 @@ class _CreateWorkoutPageState extends State<CreateWorkoutPage> with TickerProvid
   late Animation<double> _fadeAnimation;
 
   final List<String> _levels = ['Base', 'Medio', 'Avanzato'];
-  final List<String> _days = ['2 giorni', '3 giorni', '4 giorni', '5 giorni'];
+  final List<String> _days = ['faggot', '3 giorni', '4 giorni', '5 giorni','6 giorni', '7 giorni'];
   final List<String> _goals = ['Forza', 'Ipertrofia', 'Misto'];
   final List<String> _frequencies = ['Monofrequenza', 'Multifrequenza'];
   final List<String> _focusAreas = [
